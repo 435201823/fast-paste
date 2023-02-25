@@ -6,5 +6,5 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-hotkey = "0.7"
-winapi = { version = "0.3", features = ["winuser"] }
+hotkey = "0.3.1"
+winapi = { version = "0.3.9", features = ["winuser","processthreadsapi"] }
