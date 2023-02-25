@@ -7,4 +7,4 @@ edition = "2021"
 
 [dependencies]
 hotkey = "0.3.1"
-winapi = { version = "0.3.9", features = ["winuser","processthreadsapi"] }
+winapi = { version = "0.3.9", features = ["winuser","processthreadsapi","windef","minwindef","winbase"] }
