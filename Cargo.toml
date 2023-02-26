@@ -8,3 +8,6 @@ edition = "2021"
 [dependencies]
 hotkey = "0.3.1"
 winapi = { version = "0.3.9", features = ["winuser","processthreadsapi","windef","minwindef","winbase","winnt"] }
+winput = "0.2.5"
+clipboard = "0.5.0"
+lazy_static = "1.4"
