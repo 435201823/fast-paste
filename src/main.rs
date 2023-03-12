@@ -25,7 +25,7 @@ fn main() -> InnerResult<()> {
     let _tray_item = create_systray();
 
     let mut hk = hotkey::Listener::new();
-    register_hotkey(&mut hk);
+    register_hotkey(&mut hk)?;
     hk.listen();
 
     Ok(())
