@@ -4,6 +4,7 @@ pub mod simulate;
 pub mod tray;
 
 use crate::core::FastPaste;
+use crate::error::InnerResult;
 use crate::tray::create_systray;
 use hotkey;
 use hotkey::Listener;
@@ -15,7 +16,7 @@ use std::mem::size_of;
 use std::ops::DerefMut;
 use std::os::windows::ffi::OsStringExt;
 use std::ptr::null_mut;
-use std::sync::{mpsc, Mutex};
+use std::sync::{mpsc, LockResult, Mutex};
 use tray_item::TrayItem;
 use winapi::um::wincon::{AttachConsole, FreeConsole, ATTACH_PARENT_PROCESS};
 
@@ -23,8 +24,8 @@ lazy_static! {
     static ref FAST_PASTE: Mutex<FastPaste> = Mutex::new(FastPaste::new());
 }
 
-fn main() {
-    hide_console();
+fn main() -> InnerResult<()> {
+    // hide_console();
 
     //tray_item必须在程序结束前生命周期不结束
     let _tray_item = create_systray();
@@ -32,28 +33,40 @@ fn main() {
     let mut hk = hotkey::Listener::new();
     register_hotkey(&mut hk);
     hk.listen();
+
+    Ok(())
 }
 
-fn register_hotkey(hotkey_listen: &mut Listener) {
+fn register_hotkey(hotkey_listen: &mut Listener) -> InnerResult<()> {
     for c in '0'..='9' {
-        hotkey_listen
-            .register_hotkey(hotkey::modifiers::CONTROL, c as u32, move || {
-                FAST_PASTE.lock().unwrap().paste(c);
-            })
-            .unwrap();
+        hotkey_listen.register_hotkey(hotkey::modifiers::CONTROL, c as u32, move || {
+            match FAST_PASTE.lock() {
+                Ok(mut v) => {
+                    v.paste(c);
+                }
+                Err(e) => {
+                    println!("注册失败按键失败：{}", e.to_string());
+                }
+            }
+        })?;
     }
 
     for c in '0'..='9' {
-        hotkey_listen
-            .register_hotkey(
-                hotkey::modifiers::CONTROL | hotkey::modifiers::SHIFT,
-                c as u32,
-                move || {
-                    FAST_PASTE.lock().unwrap().copy(c);
-                },
-            )
-            .unwrap();
+        hotkey_listen.register_hotkey(
+            hotkey::modifiers::CONTROL | hotkey::modifiers::SHIFT,
+            c as u32,
+            move || match FAST_PASTE.lock() {
+                Ok(mut v) => {
+                    v.copy(c);
+                }
+                Err(e) => {
+                    println!("注册失败按键失败：{}", e.to_string());
+                }
+            },
+        )?;
     }
+
+    Ok(())
 }
 
 fn hide_console() {
