@@ -12,15 +12,11 @@ use lazy_static::lazy_static;
 
 use std::sync::Mutex;
 
-use winapi::um::wincon::FreeConsole;
-
 lazy_static! {
     static ref FAST_PASTE: Mutex<FastPaste> = Mutex::new(FastPaste::new());
 }
 
 fn main() -> InnerResult<()> {
-    // hide_console();
-
     //tray_item必须在程序结束前生命周期不结束
     let _tray_item = create_systray();
 
@@ -51,15 +47,11 @@ fn register_hotkey(hotkey_listen: &mut Listener) -> InnerResult<()> {
     Ok(())
 }
 
-fn hide_console() {
-    unsafe {
-        // Detach the current console if it exists
-        FreeConsole();
-
-        // // Allocate a new console
-        // AllocConsole();
-        //
-        // // Attach the new console to the parent process (i.e. this process)
-        // AttachConsole(ATTACH_PARENT_PROCESS);
-    }
-}
+//TODO 还需要调试
+//
+// fn hide_console() {
+//     unsafe {
+//         // Detach the current console if it exists
+//         FreeConsole();
+//     }
+// }

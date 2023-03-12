@@ -9,6 +9,12 @@ pub struct InnerError {
     msg: String,
 }
 
+impl InnerError {
+    pub fn msg(&self) -> String {
+        self.msg.clone()
+    }
+}
+
 impl From<Box<dyn std::error::Error>> for InnerError {
     fn from(e: Box<dyn Error>) -> Self {
         Self { msg: e.to_string() }

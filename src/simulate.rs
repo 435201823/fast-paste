@@ -7,25 +7,21 @@ pub struct Simulate {}
 
 impl Simulate {
     pub fn ctrl_c() {
-        unsafe {
-            sleep(Duration::from_millis(500));
-            winput::press(Vk::Control);
-            winput::press(Vk::C);
-            winput::release(Vk::C);
-            winput::release(Vk::Control);
-            sleep(Duration::from_millis(500));
-        }
+        sleep(Duration::from_millis(500));
+        winput::press(Vk::Control);
+        winput::press(Vk::C);
+        winput::release(Vk::C);
+        winput::release(Vk::Control);
+        sleep(Duration::from_millis(500));
     }
 
     pub fn ctrl_v() {
-        unsafe {
-            sleep(Duration::from_millis(100));
-            winput::press(Vk::Control);
-            winput::press(Vk::V);
-            winput::release(Vk::V);
-            winput::release(Vk::Control);
-            sleep(Duration::from_millis(100));
-        }
+        sleep(Duration::from_millis(100));
+        winput::press(Vk::Control);
+        winput::press(Vk::V);
+        winput::release(Vk::V);
+        winput::release(Vk::Control);
+        sleep(Duration::from_millis(100));
     }
 
     pub fn wait_no_key() {
