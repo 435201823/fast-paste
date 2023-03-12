@@ -1,7 +1,6 @@
 use crate::InnerResult;
 use std::process::exit;
-use std::sync::mpsc;
-use std::sync::mpsc::Receiver;
+
 use tray_item::TrayItem;
 
 pub fn create_systray() -> InnerResult<TrayItem> {

@@ -2,8 +2,6 @@ use crate::simulate::Simulate;
 use crate::InnerResult;
 use clipboard::{ClipboardContext, ClipboardProvider};
 use std::collections::HashMap;
-use std::thread::sleep;
-use std::time::Duration;
 
 pub struct FastPaste {
     content: HashMap<char, String>,
@@ -21,7 +19,7 @@ impl FastPaste {
         Simulate::ctrl_c();
         let new = Self::get_contents()?;
         self.content.insert(c, new.clone());
-        Self::set_contents(old);
+        Self::set_contents(old)?;
 
         Ok(())
     }
@@ -35,9 +33,9 @@ impl FastPaste {
         };
 
         let old = Self::get_contents()?;
-        Self::set_contents(context);
+        Self::set_contents(context)?;
         Simulate::ctrl_v();
-        Self::set_contents(old);
+        Self::set_contents(old)?;
 
         Ok(())
     }

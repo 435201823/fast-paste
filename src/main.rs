@@ -9,16 +9,10 @@ use crate::tray::create_systray;
 use hotkey;
 use hotkey::Listener;
 use lazy_static::lazy_static;
-use std::borrow::BorrowMut;
-use std::ffi::OsString;
-use std::fs::File;
-use std::mem::size_of;
-use std::ops::DerefMut;
-use std::os::windows::ffi::OsStringExt;
-use std::ptr::null_mut;
-use std::sync::{mpsc, LockResult, Mutex};
-use tray_item::TrayItem;
-use winapi::um::wincon::{AttachConsole, FreeConsole, ATTACH_PARENT_PROCESS};
+
+use std::sync::Mutex;
+
+use winapi::um::wincon::FreeConsole;
 
 lazy_static! {
     static ref FAST_PASTE: Mutex<FastPaste> = Mutex::new(FastPaste::new());
@@ -40,14 +34,7 @@ fn main() -> InnerResult<()> {
 fn register_hotkey(hotkey_listen: &mut Listener) -> InnerResult<()> {
     for c in '0'..='9' {
         hotkey_listen.register_hotkey(hotkey::modifiers::CONTROL, c as u32, move || {
-            match FAST_PASTE.lock() {
-                Ok(mut v) => {
-                    v.paste(c);
-                }
-                Err(e) => {
-                    println!("注册失败按键失败：{}", e.to_string());
-                }
-            }
+            FAST_PASTE.lock().unwrap().paste(c).unwrap();
         })?;
     }
 
@@ -55,13 +42,8 @@ fn register_hotkey(hotkey_listen: &mut Listener) -> InnerResult<()> {
         hotkey_listen.register_hotkey(
             hotkey::modifiers::CONTROL | hotkey::modifiers::SHIFT,
             c as u32,
-            move || match FAST_PASTE.lock() {
-                Ok(mut v) => {
-                    v.copy(c);
-                }
-                Err(e) => {
-                    println!("注册失败按键失败：{}", e.to_string());
-                }
+            move || {
+                FAST_PASTE.lock().unwrap().copy(c).unwrap();
             },
         )?;
     }
