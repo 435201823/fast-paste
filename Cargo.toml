@@ -7,7 +7,11 @@ edition = "2021"
 
 [dependencies]
 hotkey = "0.3.1"
-winapi = { version = "0.3.9", features = ["winuser","processthreadsapi","windef","minwindef","winbase","winnt"] }
+winapi = { version = "0.3.9", features = ["winuser","processthreadsapi","windef","minwindef","winbase","winnt","wincon"] }
 winput = "0.2.5"
 clipboard = "0.5.0"
 lazy_static = "1.4"
+tray-item = "0.7.1"
+
+[build-dependencies]
+windres = "*"
